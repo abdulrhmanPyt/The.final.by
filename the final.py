@@ -1,0 +1,241 @@
+import time
+import random
+
+# The while loop
+while input("Password: ") != "a":
+    print("Wrong password, try again.")
+print("wellcome to my project")
+time.sleep(1)
+    
+def print_pause():
+    time.sleep(0)
+
+# Try again def
+def ask_retry():
+    answer = input("Would you like to try again? (yes/no): ").lower()
+    while answer not in ["yes", "no"]:
+        answer = input("Please type 'yes' or 'no': ").lower()
+    return answer == "yes"
+    
+
+# Start game def
+def start_game():
+    global health, inventory, score
+
+    health = 100
+    inventory = []
+    score = 0
+
+    print_pause()
+    print("Let's go")
+    print_pause()
+    print("You find yourself standing in a field of flowers.")
+    print_pause()
+    print("In front of you there is a house. on your right there is a dark cave .")
+    print_pause()
+    print("The house isn't comfortable,but the cave very dark ")
+    print_pause()
+    print("Will you explore the cave or Knock on the door?")
+    print_pause()
+    print("Enter 1 to explore the cave.")
+    print_pause()
+    print("Enter 2 to Knock the house.")
+    print_pause()
+    choice = input("What do you choose? ")
+
+    while choice not in ["1", "2"]:
+        choice = input("Invalid choice. Enter 1 to explore the cave or 2 to approach the house: ")
+
+    if choice == "1":
+        return explore_cave()
+    elif choice == "2":
+         print_pause()
+         print("Oops! The souls of the murdered couple are still looking for someone to be with their souls.")
+         print_pause()
+         print("Your soul will join them now. Goodbye.")
+
+         if ask_retry():
+            return start_game()
+         else:
+            print("Thanks for playing. Goodbye!")
+            return False
+# The areas def
+def explore_cave():
+    global health, score, inventory
+    areas = ["Narrow Passage", "Dark Room", "Waterlogged Vault", "Haunted Hall"]
+    completed_battles = 0
+    total_battles = 20  # Number of battles in each area
+
+    available_areas = areas.copy()
+
+    while health > 0 and score < 999 and completed_battles < len(areas) * total_battles:
+        print_pause()
+        print(f"\nYou need to select an area.")
+        print_pause()
+        print("Choose an area to explore:")
+        for i, area in enumerate(available_areas, 1):
+            print(f"{i}. {area}")
+
+        choice = input("Enter the number of the area you want to explore: ")
+        while choice not in [str(i) for i in range(1, len(available_areas) + 1)]:
+            choice = input("Invalid choice. Please select a valid area: ")
+
+        area = available_areas[int(choice) - 1]
+        print(f"You venture into the {area}.")
+        print_pause()
+
+        for battle in range(total_battles):
+            enemy = random.choice(["Goblin", "Shadow Beast", "Cave Troll", "Dark Spirit", "Wicked Fairy"])
+            print_pause()
+            print(f"Battle {battle + 1}/{total_battles} begins!")
+            print_pause()
+            print(f"A wild {enemy} stands in your way!")
+            print_pause()
+            print("The tension is thick, and you prepare yourself for what comes next.")
+            print_pause()
+            print("What will you do?")
+            print("1. Fight")
+            print("2. Run")
+            choice = input("Choose 1 to Fight or 2 to Run: ")
+
+            while choice not in ["1", "2"]:
+                choice = input("Invalid option. Please enter 1 to Fight or 2 to Run: ")
+
+            if choice == "1":
+                print_pause()
+                print(f"You decide to face the {enemy} head-on!")
+                damage = random.randint(10, 15)
+                if "Shield of Light" in inventory:
+                    damage = int(damage * 0.5)
+                    print_pause()
+                    print("Your Shield of Light reduces the damage!")
+
+                win_chance = 0.4
+                if "Fire Wand" in inventory:
+                    win_chance = 0.7
+                    print("Your Fire Wand glows brighter, giving you an edge in battle!")
+
+                round_count = 0
+                max_rounds = 5
+                # The random def
+                while random.random() >= win_chance and round_count < max_rounds:
+                    round_count += 1
+                    print_pause()
+                    print(f"The {enemy} strikes again... (Round {round_count}/{max_rounds})")
+                    damage_taken = random.randint(15, 30)
+                    print_pause()
+                    print(f"You take {damage_taken} damage!")
+                    health -= damage_taken
+                    score -= 5
+                    print_pause()
+                    print(f"Your health: {health}")
+                    print_pause()
+                    print(f"Your score: {score}")
+
+                    if health <= 0:
+                        print_pause()
+                        print("You were defeated in battle.")
+                        return False
+
+                    if "Healing Potion" in inventory:
+                        healed = 10
+                        health = min(health + healed, 100)
+                        print_pause()
+                        print(f"The Healing Potion restored 10 HP. Your health is now {health}.")
+                        inventory.remove("Healing Potion")
+                    else:
+                        print_pause()
+                        print("No Healing Potion available.")
+                    print_pause()
+                    print("You gather your strength and prepare for the next blow.")
+
+                if round_count >= max_rounds:
+                    print_pause()
+                    print(f"You had to pull back from the fight with the {enemy}.")
+                    continue
+                
+                print_pause()
+                print(f"You've triumphed over the {enemy}!")
+
+                score_gain = random.randint(1, 15)
+                score += score_gain
+                print_pause()
+                print(f"You gain {score_gain} points!")
+
+                rewards = ["Fire Wand", "Healing Potion", "Shield of Light", "Ring of Speed", "Amulet of Wisdom"]
+                reward = random.choice(rewards)
+                inventory.append(reward)
+                
+                print_pause()
+                print(f"You discover a magical item: {reward}")
+                if reward == "Healing Potion":
+                    healed = 10
+                    health = min(health + healed, 100)
+                    print_pause()
+                    print(f"The Healing Potion restored 10 HP. Your health is now {health}.")
+                    inventory.remove("Healing Potion")
+                print_pause()
+                print(f"Your health is now {health}")
+                print_pause()
+                print(f"Your score is now {score}")
+
+            else:
+                print_pause()
+                print(f"You turn and run from the {enemy}, narrowly escaping.")
+                score -= 5
+                print_pause()
+                print(f"You lose 5 points for fleeing. Your score is now {score}.")
+
+            completed_battles += 1
+            print_pause()
+            print(f"Battle {completed_battles}/{total_battles} completed.")
+            print_pause()
+            print(f"Your health: {health}, score: {score}")
+
+            if score >= 999:
+                print_pause()
+                print("you have reached a legendary score of 999!")
+                return False
+
+        available_areas.remove(area)
+        print_pause()
+        print(f"You've completed all battles in the {area}.")
+
+        if not available_areas:
+            print_pause()
+            print("you have conquered every area of the cave!")
+            score = 999
+            print_pause()
+            print(f"Your score is now: {score}")
+            print_pause()
+            print("You've completed your journey!")
+            print_pause()
+            print("You are granted immense power, making you a hero beyond compare!")
+            health = 9999
+            print_pause()
+            print(f"Your health is now {health}!")
+
+            mega_rewards = ["Infinite Mana", "Excalibur Sword", "Phoenix Feather", "Dragon Shield", "Unstoppable Force"]
+            random_rewards = random.sample(mega_rewards, 3)
+            inventory.extend(random_rewards)
+            print_pause()
+            print(f"You have been gifted legendary items: {', '.join(random_rewards)}")
+            print_pause()
+            print("Your final score is beyond mortal comprehension!")
+            return False
+
+    return True
+# The end choices
+game_continues = start_game()
+if not game_continues or score >= 999 or health <= 0:
+    if score >= 999:
+        print_pause()
+        print("You've achieved a legendary score!")
+    elif health <= 0:
+        print_pause()
+        print("You were defeated. Game over.")
+
+    if not ask_retry():
+        print_pause()
+        print("Thanks for playing. Goodbye!")
+# Please i want to be in level 3 
